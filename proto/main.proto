@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package artist.proto;
+option go_package = "artist/proto";
+
+message Empty {}
+
+service Service {
+  rpc Method(Empty) returns (Empty);
+}
