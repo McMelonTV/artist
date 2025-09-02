@@ -4,6 +4,7 @@ import (
 	"artist/internal/client/data"
 	"artist/internal/endpoints"
 	"artist/internal/proxy"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -64,6 +65,43 @@ func (c *Client) GetUserData(cfClearance string) (*data.UserData, error) {
 	}
 
 	return userData, nil
+}
+
+func (c *Client) Draw(tileX, tileY int, drawData data.DrawData, cfClearance string) (*data.DrawResponse, error) {
+	jsonData, err := json.Marshal(drawData)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", endpoints.GetDrawEndpoint(tileX, tileY), bytes.NewReader(jsonData))
+	if err != nil {
+		return nil, err
+	}
+
+	req.AddCookie(c.JCookie)
+	req.AddCookie(CreateCloudflareClearanceCookie(cfClearance))
+
+	res, err := c.HttpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to draw at %d %d", tileX, tileY)
+	}
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	drawResponse := &data.DrawResponse{}
+	err = json.Unmarshal(body, drawResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return drawResponse, nil
 }
 
 func CreateCloudflareClearanceCookie(cfClearance string) *http.Cookie {
