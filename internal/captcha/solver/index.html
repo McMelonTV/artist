@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <title>Wplace - Paint the world</title>
+    <script async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+</head>
+<body>
+<div class="cf-turnstile" data-callback="onSuccess"
+     data-error-callback="onError"
+     data-expired-callback="onExpired"
+     data-sitekey="0x4AAAAAABpqJe8FO0N84q0F"
+></div>
+<script>
+    function onSuccess(token) {
+        alert(JSON.stringify({"success": token}))
+    }
+
+    function onError(errorCode) {
+        alert(JSON.stringify({"error": errorCode}))
+    }
+
+    function onExpired() {
+        alert(JSON.stringify({"expired": true}))
+    }
+</script>
+</body>
+</html>

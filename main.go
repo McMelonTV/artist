@@ -1,6 +1,8 @@
 package main
 
-import "artist/internal/db"
+import (
+	"artist/internal/db"
+)
 
 func main() {
 	err := db.Init()
